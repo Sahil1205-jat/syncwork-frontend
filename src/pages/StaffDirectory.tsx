@@ -1,0 +1,211 @@
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Users, Plus, Mail, Briefcase, Calendar, Trash2, X, UserCheck } from "lucide-react";
+import toast from "react-hot-toast";
+
+export default function StaffDirectory() {
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // User details from localStorage
+  const userRole = localStorage.getItem("user_role") || "EMPLOYEE";
+  const isAdmin = userRole === "ADMIN";
+
+  const [newEmployee, setNewEmployee] = useState({
+    empCode: "", name: "", email: "", department: "IT", role: "EMPLOYEE", status: "Active", password: "password123", ctc: "", hireDate: new Date().toISOString().split('T')[0]
+  });
+
+  // 1. Fetch Employees from DB
+  const fetchEmployees = async () => {
+    try {
+      const res = await fetch("http://localhost:8080/api/employees");
+      if (res.ok) setEmployees(await res.json());
+    } catch (error) {
+      toast.error("Failed to sync workforce data");
+    }
+  };
+
+  useEffect(() => { fetchEmployees(); }, []);
+
+  // 2. Add New Employee Logic
+  const handleAddEmployee = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:8080/api/employees", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...newEmployee, ctc: Number(newEmployee.ctc) })
+      });
+
+      if (res.ok) {
+        toast.success("New Staff Member Onboarded!");
+        setShowAddForm(false);
+        fetchEmployees();
+        setNewEmployee({
+          empCode: "", name: "", email: "", department: "IT", role: "EMPLOYEE", status: "Active", password: "password123", ctc: "", hireDate: new Date().toISOString().split('T')[0]
+        });
+      }
+    } catch (error) {
+      toast.error("Error adding employee");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 3. Delete Employee Logic (🔥 THE NEW FEATURE)
+  const handleDelete = async (id: number, name: string) => {
+    if (!window.confirm(`Are you sure you want to remove ${name}?`)) return;
+
+    try {
+      const res = await fetch(`http://localhost:8080/api/employees/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        toast.success(`${name} has been removed from system.`);
+        // Local state update for instant animation
+        setEmployees(employees.filter(emp => emp.id !== id));
+      } else {
+        toast.error("Delete failed. Check backend.");
+      }
+    } catch (error) {
+      toast.error("Connection error while deleting");
+    }
+  };
+
+  return (
+    <div className="p-6 lg:p-10 font-sans text-slate-200 min-h-screen bg-[#020617]">
+      
+      {/* HEADER SECTION */}
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+          <h2 className="text-4xl font-black text-white flex items-center gap-3 italic">
+            <Users className="w-10 h-10 text-blue-500" /> Staff Directory
+          </h2>
+          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.3em] mt-1">Core Human Resources</p>
+        </motion.div>
+        
+        {isAdmin && (
+          <button 
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-600/20"
+          >
+            {showAddForm ? <X size={20}/> : <Plus size={20}/>} {showAddForm ? "CANCEL" : "ONBOARD STAFF"}
+          </button>
+        )}
+      </div>
+
+      <div className="max-w-6xl mx-auto">
+        
+        {/* ADD FORM (Animated Slide Down) */}
+        <AnimatePresence>
+          {showAddForm && (
+            <motion.div 
+              initial={{ height: 0, opacity: 0 }} 
+              animate={{ height: "auto", opacity: 1 }} 
+              exit={{ height: 0, opacity: 0 }} 
+              className="overflow-hidden mb-10"
+            >
+              <form onSubmit={handleAddEmployee} className="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 grid grid-cols-1 md:grid-cols-3 gap-6 shadow-2xl">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-500 uppercase">Full Name</label>
+                  <input required value={newEmployee.name} onChange={e => setNewEmployee({...newEmployee, name: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-blue-500" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-500 uppercase">Emp Code</label>
+                  <input required value={newEmployee.empCode} onChange={e => setNewEmployee({...newEmployee, empCode: e.target.value.toUpperCase()})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-blue-500 uppercase" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-500 uppercase">Email</label>
+                  <input required type="email" value={newEmployee.email} onChange={e => setNewEmployee({...newEmployee, email: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-blue-500" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-500 uppercase">Department</label>
+                  <select value={newEmployee.department} onChange={e => setNewEmployee({...newEmployee, department: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white">
+                    <option>IT</option><option>HR</option><option>Sales</option><option>Finance</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-500 uppercase">Monthly CTC</label>
+                  <input required type="number" value={newEmployee.ctc} onChange={e => setNewEmployee({...newEmployee, ctc: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-500 uppercase">Hire Date</label>
+                  <input required type="date" value={newEmployee.hireDate} onChange={e => setNewEmployee({...newEmployee, hireDate: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none" />
+                </div>
+                <button disabled={loading} className="md:col-span-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded-2xl transition-all disabled:opacity-50">
+                  {loading ? "PROCESSING..." : "CONFIRM ONBOARDING"}
+                </button>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* EMPLOYEES GRID */}
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatePresence>
+            {employees.map((emp) => (
+              <motion.div 
+                key={emp.id}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
+                className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-6 hover:border-slate-700 transition-all relative group shadow-xl"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div className="w-14 h-14 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-500 font-black text-2xl">
+                    {emp.name.charAt(0).toUpperCase()}
+                  </div>
+                  {/* 🔥 DELETE BUTTON (Admin Only) */}
+                  {isAdmin && (
+                    <button 
+                      onClick={() => handleDelete(emp.id, emp.name)}
+                      className="opacity-0 group-hover:opacity-100 p-2 bg-rose-500/10 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-all duration-300"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <h3 className="text-xl font-black text-white">{emp.name}</h3>
+                  <div className="flex items-center gap-2 text-blue-500 text-xs font-bold uppercase tracking-wider">
+                    <UserCheck size={12}/> {emp.empCode}
+                  </div>
+                </div>
+
+                <div className="space-y-2 border-t border-slate-800 pt-4">
+                  <div className="flex items-center gap-3 text-xs text-slate-400 font-bold">
+                    <Briefcase size={14} className="text-slate-600"/> {emp.department}
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-slate-400 font-bold truncate">
+                    <Mail size={14} className="text-slate-600"/> {emp.email}
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-slate-400 font-bold">
+                    <Calendar size={14} className="text-slate-600"/> Joined {emp.hireDate}
+                  </div>
+                </div>
+
+                <div className="absolute top-6 right-16">
+                   <span className={`text-[8px] font-black px-2 py-0.5 rounded-full ${emp.role === 'ADMIN' ? 'bg-amber-500/10 text-amber-500' : 'bg-slate-800 text-slate-500'}`}>
+                    {emp.role}
+                   </span>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
+        {employees.length === 0 && (
+          <div className="text-center py-20 bg-slate-900/30 border border-dashed border-slate-800 rounded-[3rem]">
+            <Users className="mx-auto w-12 h-12 text-slate-700 mb-4" />
+            <p className="text-slate-500 font-black uppercase tracking-widest text-sm">No personnel data found</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
