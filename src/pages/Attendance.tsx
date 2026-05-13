@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Clock, UserCheck, LogIn, LogOut, Calendar, Timer, Search, Download, FileText, Users } from "lucide-react";
 import toast from "react-hot-toast";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import autoTable from "jspdf-autotable"; // Ensure this is imported if used
 
 export default function Attendance() {
   const [stats, setStats] = useState<any>({ totalDays: 0, totalHours: "0h 0m", history: [] });
@@ -18,7 +18,7 @@ export default function Attendance() {
   // 1. Data Fetching
   const fetchAllLogs = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/attendance/all");
+      const res = await fetch(`http://localhost:8080/api/attendance/all`);
       if (res.ok) setAllLogs(await res.json());
     } catch (e) { console.error(e); }
   };
@@ -89,7 +89,7 @@ export default function Attendance() {
       </div>
 
       {isAdmin && (
-        <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 mb-10 shadow-2xl">
+        <div className="bg-slate-900 border-slate-800 rounded-[2.5rem] p-8 mb-10 shadow-2xl backdrop-blur-lg">
           <div className="flex flex-col md:flex-row gap-4 items-end">
             <div className="flex-1 space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase ml-2 tracking-widest">Admin Control (Punch & Search)</label>
@@ -99,7 +99,7 @@ export default function Attendance() {
                   value={targetEmpCode} 
                   onChange={(e) => setTargetEmpCode(e.target.value.toUpperCase())}
                   placeholder="Employee Code..." 
-                  className="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 pl-12 text-white font-black outline-none focus:border-blue-500"
+                  className="w-full bg-slate-950 border-slate-800 text-white rounded-2xl p-4 pl-12 font-black outline-none focus:border-blue-500 placeholder:text-slate-400"
                 />
               </div>
             </div>
@@ -118,7 +118,7 @@ export default function Attendance() {
         </div>
       )}
 
-      <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl">
+      <div className="bg-slate-900 border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl backdrop-blur-lg">
         <table className="w-full text-left">
           <thead className="bg-slate-950 text-slate-500 text-[10px] font-black uppercase tracking-widest">
             <tr>

@@ -18,7 +18,7 @@ export default function LeaveManagement() {
   const fetchLeaves = async () => {
     try {
       // Agar admin hai toh sabki leaves lao, nahi toh sirf khud ki
-      const url = isAdmin ? "http://localhost:8080/api/leaves" : `http://localhost:8080/api/leaves/${empCode}`;
+      const url = isAdmin ? `http://localhost:8080/api/leaves` : `http://localhost:8080/api/leaves/${empCode}`;
       const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
@@ -36,7 +36,7 @@ export default function LeaveManagement() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8080/api/leaves", {
+      const res = await fetch(`http://localhost:8080/api/leaves`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -100,12 +100,12 @@ export default function LeaveManagement() {
         
         {/* APPLY LEAVE FORM */}
         {showApplyForm && (
-          <div className="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-[2rem] p-8 shadow-2xl">
+          <div className="lg:col-span-3 bg-black/20 border-white/10 backdrop-blur-lg rounded-[2rem] p-8 shadow-2xl">
             <h3 className="text-xl font-black text-white mb-6">New Leave Application</h3>
             <form onSubmit={handleApplyLeave} className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Leave Type</label>
-                <select value={newLeave.type} onChange={(e) => setNewLeave({...newLeave, type: e.target.value})} className="w-full h-12 bg-slate-950 border border-slate-800 rounded-xl px-4 font-bold outline-none focus:border-purple-500 text-white">
+                <select value={newLeave.type} onChange={(e) => setNewLeave({...newLeave, type: e.target.value})} className="w-full h-12 bg-white/5 border-white/10 text-white rounded-xl px-4 font-bold outline-none focus:ring-1 focus:ring-purple-400 appearance-none">
                   <option>Sick Leave</option>
                   <option>Casual Leave</option>
                   <option>Unpaid Leave</option>
@@ -113,11 +113,11 @@ export default function LeaveManagement() {
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Date Range</label>
-                <input required type="text" value={newLeave.dates} onChange={(e) => setNewLeave({...newLeave, dates: e.target.value})} placeholder="e.g. 24 Apr - 26 Apr" className="w-full h-12 bg-slate-950 border border-slate-800 rounded-xl px-4 font-bold outline-none focus:border-purple-500 text-white" />
+                <input required type="text" value={newLeave.dates} onChange={(e) => setNewLeave({...newLeave, dates: e.target.value})} placeholder="e.g. 24 Apr - 26 Apr" className="w-full h-12 bg-white/5 border-white/10 text-white placeholder:text-slate-400 rounded-xl px-4 font-bold outline-none focus:ring-1 focus:ring-purple-400" />
               </div>
               <div className="space-y-2 md:col-span-2">
                 <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Reason</label>
-                <textarea required value={newLeave.reason} onChange={(e) => setNewLeave({...newLeave, reason: e.target.value})} placeholder="Briefly explain your reason..." className="w-full h-24 bg-slate-950 border border-slate-800 rounded-xl p-4 font-bold outline-none focus:border-purple-500 text-white"></textarea>
+                <textarea required value={newLeave.reason} onChange={(e) => setNewLeave({...newLeave, reason: e.target.value})} placeholder="Briefly explain your reason..." className="w-full h-24 bg-white/5 border-white/10 text-white placeholder:text-slate-400 rounded-xl p-4 font-bold outline-none focus:ring-1 focus:ring-purple-400"></textarea>
               </div>
               <div className="md:col-span-2">
                 <button disabled={loading} type="submit" className="w-full md:w-auto px-8 h-12 bg-white text-slate-900 rounded-xl font-black hover:bg-slate-200">{loading ? "Submitting..." : "Submit Application"}</button>
@@ -125,9 +125,8 @@ export default function LeaveManagement() {
             </form>
           </div>
         )}
-
-        {/* LEAVE REQUESTS LIST */}
-        <div className="lg:col-span-3 bg-slate-900/50 border border-slate-800 rounded-[2.5rem] p-8 shadow-2xl backdrop-blur-md">
+        {/* LEAVE REQUESTS LIST (Modified for theme) */}
+        <div className="lg:col-span-3 bg-black/20 border-white/10 backdrop-blur-lg rounded-[2.5rem] p-8 shadow-2xl">
           <div className="flex items-center gap-3 mb-8">
             <FileText className="w-6 h-6 text-purple-500" />
             <h3 className="text-xl font-black text-white">{isAdmin ? "All Pending Requests" : "My Leave History"}</h3>
@@ -137,7 +136,7 @@ export default function LeaveManagement() {
             {leaves.length === 0 ? (
               <p className="text-slate-500 font-bold">No leave records found.</p>
             ) : leaves.map((leave) => (
-              <div key={leave.id} className="bg-slate-950 border border-slate-800 rounded-2xl p-6 hover:border-slate-700 transition-all">
+              <div key={leave.id} className="bg-white/5 border-white/10 rounded-2xl p-6 hover:border-purple-400/50 transition-all">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h4 className="text-lg font-black text-white">{leave.name || leave.empCode}</h4>
@@ -154,7 +153,7 @@ export default function LeaveManagement() {
                 <div className="flex items-center gap-2 text-slate-400 text-sm font-bold mb-4">
                   <Clock className="w-4 h-4" /> {leave.dates}
                 </div>
-                <p className="text-slate-500 text-sm mb-6 bg-slate-900 p-3 rounded-xl italic">"{leave.reason}"</p>
+                <p className="text-slate-400 bg-black/20 text-sm mb-6 p-3 rounded-xl italic">"{leave.reason}"</p>
 
                 {isAdmin && leave.status === 'Pending' && (
                   <div className="flex gap-2">

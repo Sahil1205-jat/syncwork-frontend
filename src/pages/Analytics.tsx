@@ -19,8 +19,8 @@ export default function Analytics() {
       try {
         // 1. Database se Employees aur Leaves fetch karo
         const [empRes, leaveRes] = await Promise.all([
-          fetch("http://localhost:8080/api/employees"),
-          fetch("http://localhost:8080/api/leaves")
+          fetch(`http://localhost:8080/api/employees`),
+          fetch(`http://localhost:8080/api/leaves`)
         ]);
 
         const employees = empRes.ok ? await empRes.json() : [];
@@ -86,7 +86,7 @@ export default function Analytics() {
           
           {/* TOP STAT CARDS */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-[2rem] p-6 flex items-center gap-6 shadow-xl">
+            <div className="bg-slate-900 border-slate-800 rounded-[2rem] p-6 flex items-center gap-6 shadow-xl backdrop-blur-lg">
               <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center">
                 <Users className="w-8 h-8 text-blue-500" />
               </div>
@@ -96,7 +96,7 @@ export default function Analytics() {
               </div>
             </div>
             
-            <div className="bg-slate-900 border border-slate-800 rounded-[2rem] p-6 flex items-center gap-6 shadow-xl">
+            <div className="bg-slate-900 border-slate-800 rounded-[2rem] p-6 flex items-center gap-6 shadow-xl backdrop-blur-lg">
               <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
                 <UserCheck className="w-8 h-8 text-emerald-500" />
               </div>
@@ -106,7 +106,7 @@ export default function Analytics() {
               </div>
             </div>
 
-            <div className="bg-slate-900 border border-slate-800 rounded-[2rem] p-6 flex items-center gap-6 shadow-xl">
+            <div className="bg-slate-900 border-slate-800 rounded-[2rem] p-6 flex items-center gap-6 shadow-xl backdrop-blur-lg">
               <div className="w-16 h-16 rounded-2xl bg-rose-500/10 flex items-center justify-center">
                 <UserMinus className="w-8 h-8 text-rose-500" />
               </div>
@@ -121,7 +121,7 @@ export default function Analytics() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             {/* Dynamic Department Distribution */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-[2.5rem] p-8 shadow-2xl backdrop-blur-md">
+            <div className="bg-slate-900/50 border-slate-800 rounded-[2.5rem] p-8 shadow-2xl backdrop-blur-lg">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-xl font-black text-white flex items-center gap-2"><Activity className="text-amber-500 w-5 h-5"/> Department Strength</h3>
               </div>
@@ -145,7 +145,7 @@ export default function Analytics() {
             </div>
 
             {/* Overall System Health */}
-            <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 shadow-2xl flex flex-col justify-center items-center text-center">
+            <div className="bg-slate-900 border-slate-800 rounded-[2.5rem] p-8 shadow-2xl flex flex-col justify-center items-center text-center backdrop-blur-lg">
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-500 to-rose-600 flex items-center justify-center mb-6 shadow-lg shadow-amber-500/20">
                 <TrendingUp className="w-10 h-10 text-white" />
               </div>

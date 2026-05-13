@@ -3,8 +3,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Users, Plus, Mail, Briefcase, Calendar, Trash2, X, UserCheck } from "lucide-react";
 import toast from "react-hot-toast";
 
+interface Employee {
+  id: number;
+  empCode: string;
+  name: string;
+  email: string;
+  department: string;
+  role: "EMPLOYEE" | "ADMIN";
+  status: string; // Or a more specific type like "Active" | "Inactive"
+  ctc: number;
+  hireDate: string;
+}
+
 export default function StaffDirectory() {
-  const [employees, setEmployees] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -13,13 +25,13 @@ export default function StaffDirectory() {
   const isAdmin = userRole === "ADMIN";
 
   const [newEmployee, setNewEmployee] = useState({
-    empCode: "", name: "", email: "", department: "IT", role: "EMPLOYEE", status: "Active", password: "password123", ctc: "", hireDate: new Date().toISOString().split('T')[0]
+    empCode: "", name: "", email: "", department: "IT", role: "EMPLOYEE", status: "Active", ctc: "", hireDate: new Date().toISOString().split('T')[0]
   });
 
   // 1. Fetch Employees from DB
   const fetchEmployees = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/employees");
+      const res = await fetch(`http://localhost:8080/api/employees`);
       if (res.ok) setEmployees(await res.json());
     } catch (error) {
       toast.error("Failed to sync workforce data");
@@ -29,11 +41,11 @@ export default function StaffDirectory() {
   useEffect(() => { fetchEmployees(); }, []);
 
   // 2. Add New Employee Logic
-  const handleAddEmployee = async (e: any) => {
+  const handleAddEmployee = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8080/api/employees", {
+      const res = await fetch(`http://localhost:8080/api/employees`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...newEmployee, ctc: Number(newEmployee.ctc) })
@@ -44,7 +56,7 @@ export default function StaffDirectory() {
         setShowAddForm(false);
         fetchEmployees();
         setNewEmployee({
-          empCode: "", name: "", email: "", department: "IT", role: "EMPLOYEE", status: "Active", password: "password123", ctc: "", hireDate: new Date().toISOString().split('T')[0]
+          empCode: "", name: "", email: "", department: "IT", role: "EMPLOYEE", status: "Active", ctc: "", hireDate: new Date().toISOString().split('T')[0]
         });
       }
     } catch (error) {
@@ -76,7 +88,7 @@ export default function StaffDirectory() {
   };
 
   return (
-    <div className="p-6 lg:p-10 font-sans text-slate-200 min-h-screen bg-[#020617]">
+    <div className="p-6 lg:p-10 font-sans text-slate-200 bg-[#020617] min-h-screen">
       
       {/* HEADER SECTION */}
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
@@ -108,34 +120,40 @@ export default function StaffDirectory() {
               exit={{ height: 0, opacity: 0 }} 
               className="overflow-hidden mb-10"
             >
-              <form onSubmit={handleAddEmployee} className="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 grid grid-cols-1 md:grid-cols-3 gap-6 shadow-2xl">
+              <form onSubmit={handleAddEmployee} className="bg-black/20 backdrop-blur-lg border border-white/10 rounded-[2rem] p-8 grid grid-cols-1 md:grid-cols-4 gap-6 shadow-2xl">
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-slate-500 uppercase">Full Name</label>
-                  <input required value={newEmployee.name} onChange={e => setNewEmployee({...newEmployee, name: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-blue-500" />
+                  <input required value={newEmployee.name} onChange={e => setNewEmployee({...newEmployee, name: e.target.value})} className="w-full bg-white/5 border-white/10 text-white rounded-xl p-3 outline-none focus:ring-1 focus:ring-blue-400" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-slate-500 uppercase">Emp Code</label>
-                  <input required value={newEmployee.empCode} onChange={e => setNewEmployee({...newEmployee, empCode: e.target.value.toUpperCase()})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-blue-500 uppercase" />
+                  <input required value={newEmployee.empCode} onChange={e => setNewEmployee({...newEmployee, empCode: e.target.value.trim().toUpperCase()})} className="w-full bg-white/5 border-white/10 text-white rounded-xl p-3 outline-none focus:ring-1 focus:ring-blue-400 uppercase" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-slate-500 uppercase">Email</label>
-                  <input required type="email" value={newEmployee.email} onChange={e => setNewEmployee({...newEmployee, email: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-blue-500" />
+                  <input required type="email" value={newEmployee.email} onChange={e => setNewEmployee({...newEmployee, email: e.target.value})} className="w-full bg-white/5 border-white/10 text-white rounded-xl p-3 outline-none focus:ring-1 focus:ring-blue-400" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-500 uppercase">Role</label>
+                  <select value={newEmployee.role} onChange={e => setNewEmployee({...newEmployee, role: e.target.value as "EMPLOYEE" | "ADMIN"})} className="w-full bg-white/5 border-white/10 text-white rounded-xl p-3 appearance-none h-[46px] outline-none focus:ring-1 focus:ring-blue-400">
+                    <option>EMPLOYEE</option><option>ADMIN</option>
+                  </select>
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-slate-500 uppercase">Department</label>
-                  <select value={newEmployee.department} onChange={e => setNewEmployee({...newEmployee, department: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white">
+                  <select value={newEmployee.department} onChange={e => setNewEmployee({...newEmployee, department: e.target.value})} className="w-full bg-white/5 border-white/10 text-white rounded-xl p-3 appearance-none h-[46px] outline-none focus:ring-1 focus:ring-blue-400">
                     <option>IT</option><option>HR</option><option>Sales</option><option>Finance</option>
                   </select>
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-slate-500 uppercase">Monthly CTC</label>
-                  <input required type="number" value={newEmployee.ctc} onChange={e => setNewEmployee({...newEmployee, ctc: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none" />
+                  <input required type="number" value={newEmployee.ctc} onChange={e => setNewEmployee({...newEmployee, ctc: e.target.value})} className="w-full bg-white/5 border-white/10 text-white rounded-xl p-3 outline-none focus:ring-1 focus:ring-blue-400" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-slate-500 uppercase">Hire Date</label>
-                  <input required type="date" value={newEmployee.hireDate} onChange={e => setNewEmployee({...newEmployee, hireDate: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none" />
+                  <input required type="date" value={newEmployee.hireDate} onChange={e => setNewEmployee({...newEmployee, hireDate: e.target.value})} className="w-full bg-white/5 border-white/10 text-white rounded-xl p-3 outline-none focus:ring-1 focus:ring-blue-400" />
                 </div>
-                <button disabled={loading} className="md:col-span-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded-2xl transition-all disabled:opacity-50">
+                <button disabled={loading} className="md:col-span-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded-2xl transition-all disabled:opacity-50">
                   {loading ? "PROCESSING..." : "CONFIRM ONBOARDING"}
                 </button>
               </form>
@@ -153,7 +171,7 @@ export default function StaffDirectory() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
-                className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-6 hover:border-slate-700 transition-all relative group shadow-xl"
+                className="bg-black/20 backdrop-blur-lg border border-white/10 rounded-[2.5rem] p-6 hover:border-blue-400/50 transition-all relative group shadow-xl hover:shadow-blue-500/10"
               >
                 <div className="flex justify-between items-start mb-6">
                   <div className="w-14 h-14 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-500 font-black text-2xl">
@@ -177,7 +195,7 @@ export default function StaffDirectory() {
                   </div>
                 </div>
 
-                <div className="space-y-2 border-t border-slate-800 pt-4">
+                <div className="space-y-2 border-t border-white/10 pt-4">
                   <div className="flex items-center gap-3 text-xs text-slate-400 font-bold">
                     <Briefcase size={14} className="text-slate-600"/> {emp.department}
                   </div>
@@ -200,7 +218,7 @@ export default function StaffDirectory() {
         </motion.div>
 
         {employees.length === 0 && (
-          <div className="text-center py-20 bg-slate-900/30 border border-dashed border-slate-800 rounded-[3rem]">
+          <div className="text-center py-20 bg-slate-900/30 border-slate-800 border border-dashed rounded-[3rem]">
             <Users className="mx-auto w-12 h-12 text-slate-700 mb-4" />
             <p className="text-slate-500 font-black uppercase tracking-widest text-sm">No personnel data found</p>
           </div>

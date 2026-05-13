@@ -15,7 +15,7 @@ export default function NoticeBoard() {
   // 1. Fetch Notices
   const fetchNotices = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/notices");
+      const res = await fetch(`http://localhost:8080/api/notices`);
       if (res.ok) {
         const data = await res.json();
         setNotices(data);
@@ -32,7 +32,7 @@ export default function NoticeBoard() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8080/api/notices", {
+      const res = await fetch(`http://localhost:8080/api/notices`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newNotice)
@@ -100,14 +100,14 @@ export default function NoticeBoard() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             onSubmit={handleAddNotice}
-            className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 mb-10 space-y-4 overflow-hidden"
+            className="bg-black/20 border-white/10 rounded-[2.5rem] p-8 mb-10 space-y-4 overflow-hidden backdrop-blur-lg"
           >
             <input 
               required
               placeholder="Notice Title"
               value={newNotice.title}
               onChange={e => setNewNotice({...newNotice, title: e.target.value})}
-              className="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 text-white font-bold outline-none focus:border-blue-500"
+              className="w-full bg-white/5 border-white/10 text-white rounded-2xl p-4 font-bold outline-none focus:ring-1 focus:ring-blue-400 placeholder:text-slate-400"
             />
             <textarea 
               required
@@ -115,7 +115,7 @@ export default function NoticeBoard() {
               placeholder="Write your announcement here..."
               value={newNotice.content}
               onChange={e => setNewNotice({...newNotice, content: e.target.value})}
-              className="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 text-white outline-none focus:border-blue-500"
+              className="w-full bg-white/5 border-white/10 text-white rounded-2xl p-4 outline-none focus:ring-1 focus:ring-blue-400 placeholder:text-slate-400"
             />
             <button 
               disabled={loading}
@@ -137,10 +137,10 @@ export default function NoticeBoard() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="bg-slate-900/50 border border-slate-800 p-8 rounded-[2.5rem] relative group hover:border-slate-700 transition-all"
+                className="bg-black/20 border-white/10 p-8 rounded-[2.5rem] relative group hover:border-blue-400/50 transition-all backdrop-blur-lg"
               >
                 <div className="flex items-start gap-6">
-                  <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500">
+                  <div className="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center">
                     <Bell size={24} />
                   </div>
                   <div className="flex-1">
@@ -167,7 +167,7 @@ export default function NoticeBoard() {
               </motion.div>
             ))
           ) : (
-            <div className="text-center py-20 bg-slate-900/20 border border-dashed border-slate-800 rounded-[3rem]">
+            <div className="text-center py-20 bg-slate-900/20 border-slate-800 border border-dashed rounded-[3rem]">
               <p className="text-slate-600 font-black uppercase tracking-widest italic">No notices posted yet</p>
             </div>
           )}

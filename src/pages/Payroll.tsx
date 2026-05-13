@@ -18,7 +18,7 @@ export default function Payroll() {
     setLoading(true);
     try {
       const url = isAdmin 
-        ? "http://localhost:8080/api/employees" 
+        ? `http://localhost:8080/api/employees` 
         : `http://localhost:8080/api/employees/code/${loggedInEmpCode}`;
       
       const res = await fetch(url);
