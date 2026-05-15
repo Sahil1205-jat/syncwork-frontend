@@ -64,7 +64,7 @@ export default function Dashboard() {
     // and groups messages by their department channel.
     const fetchAllHistory = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/chat/history`);
+        const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/chat/history`);
         if (res.ok) {
           const history: (ChatMessage & { department?: string })[] = await res.json();
           
@@ -113,7 +113,7 @@ export default function Dashboard() {
     fetchAllHistory();
 
     const client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws-chat'),
+      webSocketFactory: () => new SockJS('https://syncwork-backend-production.up.railway.app/ws-chat'),
       onConnect: () => {
         console.log("Dashboard WebSocket Connected!");
         setIsWsConnected(true);

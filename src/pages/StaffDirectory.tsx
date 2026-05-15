@@ -31,7 +31,7 @@ export default function StaffDirectory() {
   // 1. Fetch Employees from DB
   const fetchEmployees = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/employees`);
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/employees`);
       if (res.ok) setEmployees(await res.json());
     } catch (error) {
       toast.error("Failed to sync workforce data");
@@ -45,7 +45,7 @@ export default function StaffDirectory() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8080/api/employees`, {
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/employees`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...newEmployee, ctc: Number(newEmployee.ctc) })
@@ -71,7 +71,7 @@ export default function StaffDirectory() {
     if (!window.confirm(`Are you sure you want to remove ${name}?`)) return;
 
     try {
-      const res = await fetch(`http://localhost:8080/api/employees/${id}`, {
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/employees/${id}`, {
         method: "DELETE",
       });
 

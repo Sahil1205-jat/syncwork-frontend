@@ -62,7 +62,7 @@ export default function Login() {
     }
 
     try {
-      const res = await fetch(`http://localhost:8080/api/auth/login`, {
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ empCode, password })
@@ -103,7 +103,7 @@ export default function Login() {
     try {
       // Yahan tujhe apne Spring Boot backend par ek naya endpoint banana padega
       // jo JavaMailSender use karke 'syncwork0@gmail.com' par mail bheje.
-      const res = await fetch(`http://localhost:8080/api/auth/request-access`, {
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/auth/request-access`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reqDetails)

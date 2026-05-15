@@ -18,8 +18,8 @@ export default function Payroll() {
     setLoading(true);
     try {
       const url = isAdmin 
-        ? `http://localhost:8080/api/employees` 
-        : `http://localhost:8080/api/employees/code/${loggedInEmpCode}`;
+        ? `https://syncwork-backend-production.up.railway.app/api/employees` 
+        : `https://syncwork-backend-production.up.railway.app/api/employees/code/${loggedInEmpCode}`;
       
       const res = await fetch(url);
       if (res.ok) {
@@ -37,7 +37,7 @@ export default function Payroll() {
 
   const saveCTC = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:8080/api/employees/${id}/ctc`, {
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/employees/${id}/ctc`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(Number(tempCtc))

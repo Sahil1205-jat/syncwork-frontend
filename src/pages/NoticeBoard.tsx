@@ -15,7 +15,7 @@ export default function NoticeBoard() {
   // 1. Fetch Notices
   const fetchNotices = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/notices`);
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/notices`);
       if (res.ok) {
         const data = await res.json();
         setNotices(data);
@@ -32,7 +32,7 @@ export default function NoticeBoard() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8080/api/notices`, {
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/notices`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newNotice)
@@ -53,10 +53,10 @@ export default function NoticeBoard() {
 
   // 3. 🔥 DELETE NOTICE LOGIC
   const handleDelete = async (id: number) => {
-    if (!window.confirm("Bhai, pakka udaana hai ye notice?")) return;
+    if (!window.confirm("Are you really want to delete this Notice?")) return;
 
     try {
-      const res = await fetch(`http://localhost:8080/api/notices/${id}`, {
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/notices/${id}`, {
         method: "DELETE",
       });
 

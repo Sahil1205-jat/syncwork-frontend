@@ -25,8 +25,8 @@ export default function PerformanceReviews() {
         if (!token) return;
 
         const url = isAdmin 
-            ? `http://localhost:8080/api/reviews/all` 
-            : `http://localhost:8080/api/reviews/emp/${empCode}`;
+            ? `https://syncwork-backend-production.up.railway.app/api/reviews/all` 
+            : `https://syncwork-backend-production.up.railway.app/api/reviews/emp/${empCode}`;
         
         try {
             const res = await fetch(url, { headers: { "Authorization": `Bearer ${token}` } });
@@ -65,7 +65,7 @@ export default function PerformanceReviews() {
         setCreateLoading(true);
         const token = localStorage.getItem("auth_token");
         try {
-            const res = await fetch(`http://localhost:8080/api/reviews`, {
+            const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/reviews`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify(newReview)
@@ -105,7 +105,7 @@ export default function PerformanceReviews() {
         }
 
         try {
-            const res = await fetch(`http://localhost:8080/api/reviews/${selectedReview.id}`, {
+            const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/reviews/${selectedReview.id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify({ ...payload, status: newStatus })

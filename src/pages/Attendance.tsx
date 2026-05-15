@@ -18,7 +18,7 @@ export default function Attendance() {
   // 1. Data Fetching
   const fetchAllLogs = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/attendance/all`);
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/attendance/all`);
       if (res.ok) setAllLogs(await res.json());
     } catch (e) { console.error(e); }
   };
@@ -26,7 +26,7 @@ export default function Attendance() {
   const fetchSpecificStats = async (code: string) => {
     if (!code) return;
     try {
-      const res = await fetch(`http://localhost:8080/api/attendance/stats/${code}`);
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/attendance/stats/${code}`);
       if (res.ok) setStats(await res.json());
     } catch (e) { console.error(e); }
   };
@@ -60,7 +60,7 @@ export default function Attendance() {
     const endpoint = type === 'in' ? "check-in" : "check-out";
     
     try {
-      const res = await fetch(`http://localhost:8080/api/attendance/${endpoint}/${targetEmpCode}`, { method });
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/attendance/${endpoint}/${targetEmpCode}`, { method });
       if (res.ok) {
         toast.success(`${type === 'in' ? 'Check-in' : 'Check-out'} done!`);
         isAdmin ? fetchAllLogs() : fetchSpecificStats(myEmpCode);

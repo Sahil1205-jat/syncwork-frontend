@@ -18,7 +18,7 @@ export default function LeaveManagement() {
   const fetchLeaves = async () => {
     try {
       // Agar admin hai toh sabki leaves lao, nahi toh sirf khud ki
-      const url = isAdmin ? `http://localhost:8080/api/leaves` : `http://localhost:8080/api/leaves/${empCode}`;
+      const url = isAdmin ? `https://syncwork-backend-production.up.railway.app/api/leaves` : `https://syncwork-backend-production.up.railway.app/api/leaves/${empCode}`;
       const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
@@ -36,7 +36,7 @@ export default function LeaveManagement() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8080/api/leaves`, {
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/leaves`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -64,7 +64,7 @@ export default function LeaveManagement() {
   // Status Update Karna (Admin Only)
   const updateLeaveStatus = async (id: number, newStatus: string) => {
     try {
-      const res = await fetch(`http://localhost:8080/api/leaves/${id}/status`, {
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/leaves/${id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newStatus)

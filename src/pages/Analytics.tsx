@@ -19,8 +19,8 @@ export default function Analytics() {
       try {
         // 1. Database se Employees aur Leaves fetch karo
         const [empRes, leaveRes] = await Promise.all([
-          fetch(`http://localhost:8080/api/employees`),
-          fetch(`http://localhost:8080/api/leaves`)
+          fetch(`https://syncwork-backend-production.up.railway.app/api/employees`),
+          fetch(`https://syncwork-backend-production.up.railway.app/api/leaves`)
         ]);
 
         const employees = empRes.ok ? await empRes.json() : [];

@@ -15,7 +15,7 @@ export default function Tasks() {
 
   const fetchTasks = async () => {
     const token = localStorage.getItem("auth_token");
-    const url = isAdmin ? `http://localhost:8080/api/tasks/all` : `http://localhost:8080/api/tasks/emp/${empCode}`;
+    const url = isAdmin ? `https://syncwork-backend-production.up.railway.app/api/tasks/all` : `https://syncwork-backend-production.up.railway.app/api/tasks/emp/${empCode}`;
     const res = await fetch(url, {
       headers: {
         "Authorization": `Bearer ${token}`
@@ -29,7 +29,7 @@ export default function Tasks() {
   const handleCreate = async (e: any) => {
     e.preventDefault();
     const token = localStorage.getItem("auth_token");
-    const res = await fetch(`http://localhost:8080/api/tasks`, {
+    const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/tasks`, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export default function Tasks() {
   const updateStatus = async (id: number, status: string) => {
     const token = localStorage.getItem("auth_token");
     try {
-      const res = await fetch(`http://localhost:8080/api/tasks/${id}/status`, {
+      const res = await fetch(`https://syncwork-backend-production.up.railway.app/api/tasks/${id}/status`, {
         method: "PATCH",
         headers: { 
           "Content-Type": "application/json",

@@ -105,7 +105,7 @@ function PasswordChangeModal({ empCode, onClose }: PasswordChangeModalProps) {
     const toastId = toast.loading("Changing password...");
 
     try {
-      const response = await fetch(`http://localhost:8080/api/employees/change-password`, {
+      const response = await fetch(`https://syncwork-backend-production.up.railway.app/api/employees/change-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
